@@ -8,7 +8,7 @@ under the surveilance of professionals.
 
 Project Structure:
 
-Inside 3DModels folder you have the solidworks and STL files 
+Inside 3DModels folder you have the solidworks 2019 and STL files 
 Inside programming you will have the programming code used to control the device.
 We started with Arduino Nano, stepper Driver and nema 23 motor.
 
