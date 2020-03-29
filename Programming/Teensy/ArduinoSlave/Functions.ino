@@ -40,7 +40,7 @@ long hardLimiter(long min, long max, long value) {
 
 void zero_position() {
 
-	ventMotor.setSpeed(1000);
+	ventMotor.setSpeed(2000);
 	ventMotor.move(-1000000);
 
 	pinMode(ZERO_POS, INPUT_PULLUP);
@@ -65,7 +65,6 @@ void zero_position() {
 	ventPos = 0;
 	zeroed = 1;
 
-	conf.stepperSpeed = 5000;
 
 	ventMotor.setAcceleration(acceleration);
 	ventMotor.setSpeed(conf.stepperSpeed);
@@ -148,11 +147,11 @@ void debugAtInterval(String message) {
 void setMotorSpeed(float timeToReach) {
 
 	long stepsToGo = conf.motionLength - homePosition;
-	Serial.println(stepsToGo);
+	//Serial.println(stepsToGo);
 	int speed = (stepsToGo * 1000) / timeToReach;
 	conf.stepperSpeed = speed;
-	Serial.print("Setting Motor Speed");
-	Serial.println(speed);
+	//Serial.print("Setting Motor Speed");
+	//Serial.println(speed);
 }
 
 
@@ -238,5 +237,36 @@ void serialCom() {
 		Serial.println("Saved Config");
 	}
 
+
+}
+
+
+void pressureCalculator(float inputPressure) {
+
+	float pressure = (inputPressure - 270) * 450;
+	Serial.print("Pressure is: ");
+	Serial.println(String(pressure / 10000));
+
+
+}
+
+
+void pressureRead() {
+	
+	if (readPressure) {
+
+		digitalWrite(LED, HIGH);
+		readVal1 = adc->adc0->analogRead(readPin); // read a new value, will return ADC_ERROR_VALUE if the comparison is false.
+
+		//Serial.print("readVal1 read is ");
+		//Serial.println(readVal1);
+
+		readVal2 = adc->adc0->analogRead(readPin2); // read a new value, will return ADC_ERROR_VALUE if the comparison is false.
+
+		//Serial.print("readVal1 read is ");
+		//Serial.println(readVal1);
+
+		digitalWrite(LED, LOW);
+	}
 
 }
