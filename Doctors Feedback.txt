@@ -1,0 +1,5 @@
+Sean Marshal:
+
+1. Volume of ambu is plenty
+2. Heated wire anomometer is most common flow sensor. There are also pressure sensors and typically a paramagnetic oxygen sensor
+3. Flow of oxygen into ambu can be set by the flow meter on the wall, more relevant would be to dilute oxygen with room air to a predictable concentration- could do this with an adjustable Venturi,or a blender, if there is piped medical air
