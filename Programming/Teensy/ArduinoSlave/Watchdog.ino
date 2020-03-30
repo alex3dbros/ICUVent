@@ -2,18 +2,20 @@ void ventWatchdog(int targetPosition, String action) {
 
 	if (action == "Inhale") {
 
-		ventMotor.setSpeed(conf.stepperSpeed);
-		ventMotor.setMaxSpeed(conf.stepperSpeed);
-
-		ventMotor.moveTo(targetPosition);
+		motor.setMaxSpeed(conf.stepperSpeed);
+		motor.setTargetAbs(targetPosition);
+		controller.moveAsync(motor);
+		Serial.println("Started motor movement");
 		inhaling = true;
 
 	}
 
 	if (action == "Exhale") {
-		ventMotor.setSpeed(conf.stepperSpeed);
-		ventMotor.setMaxSpeed(conf.stepperSpeed);
-		ventMotor.moveTo(30);
+
+		motor.setMaxSpeed(conf.stepperSpeed);
+		motor.setTargetAbs(targetPosition);
+		controller.moveAsync(motor);
+		Serial.println("Started motor movement exhaling");
 		exhaling = true;
 	}
 
@@ -30,10 +32,8 @@ void sensorsWatchdog() {
 
 		String message = "{\"pressure\":" + String(readVal1) + ",\"airflow\":" + String(readVal2) + ",\"tidalvol\":" + String(conf.airVol) +
 			",\"resprate\":" + String(conf.breathsPerMinute) + ",\"ieratio\":" + String(conf.inhaleExhaleRatio) + "}";
-		Serial.println(message);
-		//Serial.print(readVal1);
-		//Serial.print(",");
-		//Serial.println(readVal2);
+
+		HWSERIAL.println(message);
 
 		last_sensorWatchdog_update = millis();
 	}

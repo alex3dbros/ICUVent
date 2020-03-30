@@ -5,7 +5,7 @@ void setBreathsPerMinuteParam(int numberOfBreaths) {
 
 	if (validNBreaths != -1) {
 		conf.breathsPerMinute = validNBreaths;
-		Serial.println("BreathesPM OK");
+		HWSERIAL.println("BreathesPM OK");
 	}
 
 
@@ -18,7 +18,7 @@ void setMotionLengthParam(long mLength) {
 
 	if (validMLength != -1) {
 		conf.motionLength = validMLength;
-		Serial.println("MotionLength OK");
+		HWSERIAL.println("MotionLength OK");
 	}
 
 }
@@ -29,7 +29,7 @@ void setInhaleExhaleRateParam(int rate) {
 
 	if (validRate != -1) {
 		conf.inhaleExhaleRatio = validRate;
-		Serial.println("IE Ratio OK");
+		HWSERIAL.println("IE Ratio OK");
 	}
 
 }
@@ -41,7 +41,7 @@ void setAirVolParam(int rate) {
 
 	if (validRate != -1) {
 		conf.airVol = validRate;
-		Serial.println("AirVolume Param OK");
+		HWSERIAL.println("AirVolume Param OK");
 	}
 
 }
@@ -58,10 +58,10 @@ void homeSwitchCheck() {
 
 		if (currentMillis - beforePressingTime > 100) {
 
-			Serial.println("This is a valid press");
+			HWSERIAL.println("This is a valid press");
 
 			zeroed = false;
-			Serial.println("Switch Pressed");
+			HWSERIAL.println("Switch Pressed");
 			break;
 		}
 

@@ -8,24 +8,24 @@
 #include <ArduinoJson.h>
 #include <EEPROM.h>
 #include "EEPROMAnything.h"
-//#include <Stepper.h>
 #include <Wire.h> 
-//#include <ArduinoJson.h>
-#include <AccelStepper.h>
-//#include "TeensyThreads.h"
+#include "TeensyStep.h"
 
 #include <ADC.h>
 #include <ADC_util.h>
+
+
+#define HWSERIAL Serial1
 
 const int readPin = A4; // ADC0
 const int readPin2 = A5; // ADC1
 
 ADC* adc = new ADC(); // adc object
 
-#define STEPPER1_DIR_PIN 22
-#define STEPPER1_STEP_PIN 21
-
-AccelStepper ventMotor(AccelStepper::DRIVER, STEPPER1_STEP_PIN, STEPPER1_DIR_PIN);
+// stepper and  controller
+constexpr int stpPin = 21, dirPin = 22;
+StepControl controller;    // Use default settings 
+Stepper motor(stpPin, dirPin);
 
 const int LED = 13;
 volatile int readPressure = 1;
@@ -56,15 +56,16 @@ int maxInhaleRatio = 3;
 int minInhaleRatio = 1;
 
 long minMotionLength = 10;
-long maxMotionLength = 10200; // hard limiting the movement of the mechanics
+long maxMotionLength = 11000; // hard limiting the movement of the mechanics
 
 int homePosition = 100;
+int offSwitchPos = 1500;
 int zeroed = 0;
 int ventPos = 0;
 
-int minStepperSpeed = 100;
-int maxStepperSpeed = 20000;
-int acceleration = 20000;
+int minStepperSpeed = 2000;
+int maxStepperSpeed = 30000;
+int acceleration = 100000;
 
 unsigned long last_watchdog_update = 0;
 unsigned long last_sensorWatchdog_update = 0;
@@ -84,7 +85,7 @@ int16_t readVal1, readVal2;
 
 unsigned long lastDebug = 0;
 unsigned long debugInhaleTime = 0;
-
+unsigned long debugExhaleTime = 0;
 
 struct config
 {
@@ -100,9 +101,8 @@ Config conf;
 
 void setup() {
 
-	ventMotor.setMaxSpeed(2000);
-	ventMotor.setAcceleration(2000);
-
+	motor.setMaxSpeed(maxStepperSpeed);
+	motor.setAcceleration(acceleration);
 
 	pinMode(readPin, INPUT);
 	pinMode(readPin2, INPUT);
@@ -119,12 +119,9 @@ void setup() {
 
 	//Define the pins as inputs
 	pinMode(ZERO_POS, INPUT_PULLUP);
+	Serial.begin(9600);
+	HWSERIAL.begin(115200); //Start serial com so we could print the value on the serial monitor
 
-	Serial.begin(9600); //Start serial com so we could print the value on the serial monitor
-	// Reads the initial state of the clock pin
-
-
-	//threads.addThread(sensorsWatchdog);
 	loadOrwriteDefaults();
 
 }
@@ -139,6 +136,7 @@ void loop() {
 	}
 
 
+
 	serialCom();
 	
 	unsigned long current_millis = millis();
@@ -148,12 +146,16 @@ void loop() {
 	float timeToInhale = getInhaleTime(conf.breathsPerMinute);
 	float timeToExhale = getExhaleTime(conf.breathsPerMinute);
 
+
+
+
 	sensorsWatchdog();
 
 	if (needInhale || inhaling) {
 
 		if (needInhale) {
-
+			Serial.print("This should be inhale time: ");
+			Serial.println(timeToInhale);
 
 			debugInhaleTime = millis();
 
@@ -164,15 +166,15 @@ void loop() {
 		}
 		
 		if (inhaling) {
-			if (ventMotor.currentPosition() == conf.motionLength) {
+			if (motor.getPosition() == conf.motionLength) {
 
 				needExhale = true;
 				inhaling = false;
-				//Serial.print("Time to inhale: ");
-				//Serial.println(current_millis - debugInhaleTime);
+				Serial.print("Time to inhale: ");
+				Serial.println(current_millis - debugInhaleTime);
 
-				//Serial.print("At stepper Speed: ");
-				//Serial.println(conf.stepperSpeed);
+				Serial.print("At stepper Speed: ");
+				Serial.println(conf.stepperSpeed);
 
 			}
 
@@ -183,18 +185,36 @@ void loop() {
 
 	if (needExhale || exhaling) {
 
+		//Serial.println("I am getting here 1");
+
 		if (needExhale) {
+			debugExhaleTime = millis();
+			Serial.print("This should be exhale time: ");
+			Serial.println(timeToExhale);
+
 			setMotorSpeed(timeToExhale);
 			ventWatchdog(homePosition, "Exhale");
 			needExhale = false;
 		}
 
 		if (exhaling) {
+			//Serial.println("I am getting here 3");
 
-			if (ventMotor.currentPosition() == homePosition) {
+			//Serial.print("This is motor Position: ");
+			//Serial.println(motor.getPosition());
 
+			if (motor.getPosition() == homePosition) {
 				needInhale = true;
 				exhaling = false;
+
+				Serial.println("Time to exhale: ");
+				Serial.println(current_millis - debugExhaleTime);
+
+				Serial.println("At stepper Speed: ");
+
+				Serial.println(conf.stepperSpeed);
+				Serial.println("");
+				Serial.println("");
 
 			}
 
@@ -203,12 +223,12 @@ void loop() {
 	}
 
 	if (motorShouldRun) {
-		ventMotor.run();
+		//ventMotor.run();
 		homeSwitchCheck();
 	}
 
 	if (!motorShouldRun) {
-		ventMotor.stop();
+		//ventMotor.stop();
 	}
 	
 

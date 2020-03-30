@@ -26,12 +26,12 @@
 long hardLimiter(long min, long max, long value) {
 
 	if (value > max) {
-		Serial.println("Value Out Of Range");
+		HWSERIAL.println("Value Out Of Range");
 		return -1;
 	}
 
 	if (value < min) {
-		Serial.println("Value Out Of Range");
+		HWSERIAL.println("Value Out Of Range");
 		return -1;
 	}
 
@@ -40,35 +40,44 @@ long hardLimiter(long min, long max, long value) {
 
 void zero_position() {
 
-	ventMotor.setSpeed(2000);
-	ventMotor.move(-1000000);
-
+	Serial.println("Eneted zero");
+	motor.setMaxSpeed(2000);
+	//motor.setAcceleration(2000);
+	motor.setTargetRel(-100000);
+	
+	controller.moveAsync(motor);
+	Serial.println("Eneted zero 1");
 	pinMode(ZERO_POS, INPUT_PULLUP);
+
 	while (!digitalRead(ZERO_POS))
 	{
-		ventMotor.run();
+		//Serial.println("Homing");
 	}
-	ventMotor.setCurrentPosition(0);
-	ventMotor.move(1000);
+
+	controller.stop();
+
+	motor.setTargetAbs(offSwitchPos);
+	controller.moveAsync(motor);
 
 	while (digitalRead(ZERO_POS))
 	{
-		ventMotor.run();
+		//Serial.println("Getting of switch");
 	}
 
-	ventMotor.move(homePosition);
-	ventMotor.runToPosition();
-
+	//controller.stop();
+	motor.setPosition(0);
+	motor.setTargetAbs(1000);
+	controller.moveAsync(motor);
+	Serial.println("Eneted zero 2");
 	Serial.println("Zeroed");
-
 
 	ventPos = 0;
 	zeroed = 1;
 
+	Serial.println("Eneted zero 3");
+	motor.setMaxSpeed(conf.stepperSpeed);
+	motor.setAcceleration(acceleration);
 
-	ventMotor.setAcceleration(acceleration);
-	ventMotor.setSpeed(conf.stepperSpeed);
-	ventMotor.setMaxSpeed(conf.stepperSpeed);
 }
 
 
@@ -147,8 +156,20 @@ void debugAtInterval(String message) {
 void setMotorSpeed(float timeToReach) {
 
 	long stepsToGo = conf.motionLength - homePosition;
-	//Serial.println(stepsToGo);
-	int speed = (stepsToGo * 1000) / timeToReach;
+	Serial.print("Steps to go: ");
+	Serial.println(stepsToGo);
+	int stepsMultiplier = 1000;
+
+
+	if (timeToReach < 1000) {
+		stepsMultiplier = 2000;
+	}
+
+	if (timeToReach < 2000) {
+		stepsMultiplier = 1100;
+	}
+
+	int speed = (stepsToGo * stepsMultiplier) / timeToReach;
 	conf.stepperSpeed = speed;
 	//Serial.print("Setting Motor Speed");
 	//Serial.println(speed);
@@ -167,15 +188,15 @@ void serialCom() {
 	
 	int conf_changed = 0;
 
-	if (Serial.available()) {
-		input = Serial.readStringUntil('\n');
+	if (HWSERIAL.available()) {
+		input = HWSERIAL.readStringUntil('\n');
 		StaticJsonDocument<200> command;
 
 		DeserializationError error = deserializeJson(command, input.c_str());
 
 		if (error) {
-			Serial.print(F("deserializeJson() failed: "));
-			Serial.println(error.c_str());
+			HWSERIAL.print(F("deserializeJson() failed: "));
+			HWSERIAL.println(error.c_str());
 			return;
 		}
 
@@ -234,7 +255,7 @@ void serialCom() {
 
 		EEPROM_writeAnything(0, conf);
 		conf_changed = 0;
-		Serial.println("Saved Config");
+		HWSERIAL.println("Saved Config");
 	}
 
 
@@ -244,8 +265,8 @@ void serialCom() {
 void pressureCalculator(float inputPressure) {
 
 	float pressure = (inputPressure - 270) * 450;
-	Serial.print("Pressure is: ");
-	Serial.println(String(pressure / 10000));
+	HWSERIAL.print("Pressure is: ");
+	HWSERIAL.println(String(pressure / 10000));
 
 
 }
