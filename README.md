@@ -22,7 +22,7 @@ Parts used that must be purchased:
 Mechanics:
 4 x 8mm round bearings from 3d printer
 2 x 8mm rods
-1 x Nema 23 Motor
+1 x Nema 34 Motor // Updated from nema 23, will update the design soon.
 1 x 3d printer belt (approx 1m)
 2 x 3d printer gears compatible with the belt
 1 x Ambubag, preferable with PEEP valve and safety valve
