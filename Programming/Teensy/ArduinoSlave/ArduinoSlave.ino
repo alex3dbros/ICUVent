@@ -16,9 +16,10 @@
 
 
 #define HWSERIAL Serial1
+int buttonState = 0;
 
-const int readPin = A4; // ADC0
-const int readPin2 = A5; // ADC1
+const int readPin = A2; // ADC0
+const int readPin2 = A1; // ADC1
 
 ADC* adc = new ADC(); // adc object
 
@@ -34,8 +35,8 @@ volatile unsigned long blinkCount = 0;
 
 int millisbetweenSteps = 1;
 
-#define ENdrv 23
-#define ZERO_POS 20 // Endstop
+#define ENdrv 20
+#define ZERO_POS 23 // Endstop
 
 long counter = 0;
 int State;
@@ -56,16 +57,16 @@ int maxInhaleRatio = 3;
 int minInhaleRatio = 1;
 
 long minMotionLength = 10;
-long maxMotionLength = 11000; // hard limiting the movement of the mechanics
+long maxMotionLength = 4000; // hard limiting the movement of the mechanics
 
-int homePosition = 100;
-int offSwitchPos = 1500;
+int homePosition = 150;
+int offSwitchPos = 300;
 int zeroed = 0;
 int ventPos = 0;
 
-int minStepperSpeed = 2000;
-int maxStepperSpeed = 30000;
-int acceleration = 100000;
+int minStepperSpeed = 100;
+int maxStepperSpeed = 10000;
+int acceleration = 30000;
 
 unsigned long last_watchdog_update = 0;
 unsigned long last_sensorWatchdog_update = 0;
@@ -106,7 +107,8 @@ void setup() {
 
 	pinMode(readPin, INPUT);
 	pinMode(readPin2, INPUT);
-
+	pinMode(10, OUTPUT);
+	digitalWrite(10, LOW);
 	// Setting ADC0
 	adc->adc0->setAveraging(32); // set number of averages
 	adc->adc0->setResolution(16); // set bits of resolution
@@ -115,7 +117,7 @@ void setup() {
 
 	pinMode(LED, OUTPUT);
 	pinMode(ENdrv, OUTPUT);
-	digitalWrite(ENdrv, HIGH); // Stepper driver ENABLE ! 
+	digitalWrite(ENdrv, LOW); // Stepper driver ENABLE ! 
 
 	//Define the pins as inputs
 	pinMode(ZERO_POS, INPUT_PULLUP);
@@ -154,8 +156,8 @@ void loop() {
 	if (needInhale || inhaling) {
 
 		if (needInhale) {
-			Serial.print("This should be inhale time: ");
-			Serial.println(timeToInhale);
+			//Serial.print("This should be inhale time: ");
+			//Serial.println(timeToInhale);
 
 			debugInhaleTime = millis();
 
@@ -170,11 +172,11 @@ void loop() {
 
 				needExhale = true;
 				inhaling = false;
-				Serial.print("Time to inhale: ");
-				Serial.println(current_millis - debugInhaleTime);
+				//Serial.print("Time to inhale: ");
+				//Serial.println(current_millis - debugInhaleTime);
 
-				Serial.print("At stepper Speed: ");
-				Serial.println(conf.stepperSpeed);
+				//Serial.print("At stepper Speed: ");
+				//Serial.println(conf.stepperSpeed);
 
 			}
 
@@ -189,8 +191,8 @@ void loop() {
 
 		if (needExhale) {
 			debugExhaleTime = millis();
-			Serial.print("This should be exhale time: ");
-			Serial.println(timeToExhale);
+			//Serial.print("This should be exhale time: ");
+			//Serial.println(timeToExhale);
 
 			setMotorSpeed(timeToExhale);
 			ventWatchdog(homePosition, "Exhale");
@@ -207,20 +209,39 @@ void loop() {
 				needInhale = true;
 				exhaling = false;
 
-				Serial.println("Time to exhale: ");
-				Serial.println(current_millis - debugExhaleTime);
+				//Serial.println("Time to exhale: ");
+				//Serial.println(current_millis - debugExhaleTime);
 
-				Serial.println("At stepper Speed: ");
+				//Serial.println("At stepper Speed: ");
 
-				Serial.println(conf.stepperSpeed);
-				Serial.println("");
-				Serial.println("");
+				//Serial.println(conf.stepperSpeed);
+				//Serial.println("");
+				//Serial.println("");
 
 			}
 
 		}
 
 	}
+
+
+	// read the state of the pushbutton value:
+	buttonState = digitalRead(23);
+
+	// check if the pushbutton is pressed.
+	// if it is, the buttonState is HIGH:
+	if (buttonState == HIGH) {
+		// turn LED on:    
+		Serial.println("1");
+	}
+	else {
+		// turn LED off:
+		Serial.println("0");
+	}
+
+
+
+
 
 	if (motorShouldRun) {
 		//ventMotor.run();

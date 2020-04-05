@@ -52,16 +52,16 @@ void homeSwitchCheck() {
 	unsigned long beforePressingTime = millis();
 
 
-	while (digitalRead(ZERO_POS)) {
+	while (!digitalRead(ZERO_POS)) {
 		
 		unsigned long currentMillis = millis();
 
 		if (currentMillis - beforePressingTime > 100) {
 
-			HWSERIAL.println("This is a valid press");
+			//Serial.println("This is a valid press");
 
 			zeroed = false;
-			HWSERIAL.println("Switch Pressed");
+			//Serial.println("Switch Pressed");
 			break;
 		}
 

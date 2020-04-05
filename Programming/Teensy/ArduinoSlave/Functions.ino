@@ -41,15 +41,16 @@ long hardLimiter(long min, long max, long value) {
 void zero_position() {
 
 	Serial.println("Eneted zero");
-	motor.setMaxSpeed(2000);
+	motor.setMaxSpeed(1000);
 	//motor.setAcceleration(2000);
-	motor.setTargetRel(-100000);
+
+	motor.setTargetRel(-10000);
 	
 	controller.moveAsync(motor);
-	Serial.println("Eneted zero 1");
-	pinMode(ZERO_POS, INPUT_PULLUP);
 
-	while (!digitalRead(ZERO_POS))
+	Serial.println("Eneted zero 1");
+
+	while (digitalRead(ZERO_POS))
 	{
 		//Serial.println("Homing");
 	}
@@ -59,7 +60,7 @@ void zero_position() {
 	motor.setTargetAbs(offSwitchPos);
 	controller.moveAsync(motor);
 
-	while (digitalRead(ZERO_POS))
+	while (!digitalRead(ZERO_POS))
 	{
 		//Serial.println("Getting of switch");
 	}
@@ -68,13 +69,13 @@ void zero_position() {
 	motor.setPosition(0);
 	motor.setTargetAbs(1000);
 	controller.moveAsync(motor);
-	Serial.println("Eneted zero 2");
-	Serial.println("Zeroed");
+	//Serial.println("Eneted zero 2");
+	//Serial.println("Zeroed");
 
 	ventPos = 0;
 	zeroed = 1;
 
-	Serial.println("Eneted zero 3");
+	//Serial.println("Eneted zero 3");
 	motor.setMaxSpeed(conf.stepperSpeed);
 	motor.setAcceleration(acceleration);
 
@@ -156,8 +157,8 @@ void debugAtInterval(String message) {
 void setMotorSpeed(float timeToReach) {
 
 	long stepsToGo = conf.motionLength - homePosition;
-	Serial.print("Steps to go: ");
-	Serial.println(stepsToGo);
+	//Serial.print("Steps to go: ");
+	//Serial.println(stepsToGo);
 	int stepsMultiplier = 1000;
 
 
