@@ -1,28 +1,3 @@
-﻿void loadOrwriteDefaults() {
-
-	int canWriteDefaults;
-	EEPROM_readAnything(80, canWriteDefaults);
-	//canWriteDefaults = -1;
-
-	if (canWriteDefaults == -1) {
-
-		conf.breathsPerMinute = 12;
-		conf.airVol = 600;
-		conf.inhaleExhaleRatio = 1;
-		conf.motionLength = 10200;
-		conf.stepperSpeed = 1000;
-		EEPROM_writeAnything(0, conf);
-		EEPROM_writeAnything(80, 1);
-	}
-
-	if (canWriteDefaults == 1) {
-
-		EEPROM_readAnything(0, conf);
-
-	}
-}
-
-
 long hardLimiter(long min, long max, long value) {
 
 	if (value > max) {
@@ -37,6 +12,27 @@ long hardLimiter(long min, long max, long value) {
 
 	return value;
 }
+
+
+void loadOrwriteDefaults() {
+  int canWriteDefaults;
+  EEPROM_readAnything(80, canWriteDefaults);
+
+  if (canWriteDefaults == -1) {
+    conf.breathsPerMinute = 12;
+    conf.airVol = 600;
+    conf.inhaleExhaleRatio = 1;
+    conf.motionLength = 10200;
+    conf.stepperSpeed = 1000;
+    EEPROM_writeAnything(0, conf);
+    EEPROM_writeAnything(80, 1);
+  }
+
+  if (canWriteDefaults == 1) {
+    EEPROM_readAnything(0, conf);
+  }
+}
+
 
 void zero_position() {
 
