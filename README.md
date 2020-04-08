@@ -23,19 +23,21 @@ Mechanics:
 4 x 8mm round bearings from 3d printer
 2 x 8mm rods
 1 x Nema 34 Motor // Updated from nema 23, will update the design soon.
-1 x 3d printer belt (approx 1m)
-2 x 3d printer gears compatible with the belt
+1 x 16 mm T5 belt
+2 x 18 teeth T5 gear
 1 x Ambubag, preferable with PEEP valve and safety valve
 
 
 Electronics: 
-1 x Arduino Nano
-1 x Driver TB6600
+1 x Teensy 3.2
+1 x Driver PSD8079-2P
 1 x Encoder like this : https://www.amazon.com/Cylewet-Encoder-Digital-Potentiometer-Arduino/dp/B07DM2YMT4/ref=sr_1_6?keywords=encoder&qid=1585150874&sr=8-6
 1 x DC to DC 24V to 5V like this : https://www.amazon.com/6-5-28V-MP1584-DC-DC-Step-Down-Module/dp/B082957QHR/ref=sr_1_3?keywords=MP1584+5V&qid=1585150582&sr=8-3
 1 x 24 V Power supply
 1 x EndStop switch
 1 x LCD : https://www.amazon.com/HiLetgo-HD44780-I2C1602-Interface-Backlight/dp/B07W5KC65S/ref=sr_1_4?keywords=i2c+lcd&qid=1585150972&sr=8-4
+1 x MPXV5004DP
+1 x MPXV5010DP
 
 Connection pins - https://www.amazon.com/Hotop-Pack-Single-Header-Connector/dp/B06XR8CV8P/ref=sr_1_1?keywords=2.54+pins&qid=1585151123&sr=8-1&swrs=BA6CC27AC84D7760BA1186A07738C3A9
 
