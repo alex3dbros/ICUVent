@@ -35,7 +35,7 @@ Electronics:
 1 x DC to DC 24V to 5V like this : https://www.amazon.com/6-5-28V-MP1584-DC-DC-Step-Down-Module/dp/B082957QHR/ref=sr_1_3?keywords=MP1584+5V&qid=1585150582&sr=8-3
 1 x 24 V Power supply
 1 x EndStop switch
-1 x LCD : https://www.amazon.com/HiLetgo-HD44780-I2C1602-Interface-Backlight/dp/B07W5KC65S/ref=sr_1_4?keywords=i2c+lcd&qid=1585150972&sr=8-4
+1 x raspberry pi with 7 inch display
 1 x MPXV5004DP
 1 x MPXV5010DP
 
