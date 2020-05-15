@@ -47,13 +47,40 @@ void setAirVolParam(int rate) {
 }
 
 
+int switchPressed() {
+
+	int pressedCount = 0;
+
+	for (int i = 0; i < 100; i++) {
+
+		if (digitalRead(ZERO_POS)) {
+
+			pressedCount += 1;
+
+
+		}
+
+		if (pressedCount > 99) {
+
+			return 1;
+
+		}
+
+		delay(1);
+
+	}
+
+	return 0;
+
+}
+
+
 void homeSwitchCheck() {
 
 	unsigned long beforePressingTime = millis();
 
+	while (switchPressed()) {
 
-	while (!digitalRead(ZERO_POS)) {
-		
 		unsigned long currentMillis = millis();
 
 		if (currentMillis - beforePressingTime > 100) {

@@ -57,7 +57,7 @@ int maxInhaleRatio = 3;
 int minInhaleRatio = 1;
 
 long minMotionLength = 10;
-long maxMotionLength = 4000; // hard limiting the movement of the mechanics
+long maxMotionLength = 15000; // hard limiting the movement of the mechanics
 
 int homePosition = 150;
 int offSwitchPos = 300;
@@ -138,7 +138,6 @@ void loop() {
 	}
 
 
-
 	serialCom();
 	
 	unsigned long current_millis = millis();
@@ -156,8 +155,8 @@ void loop() {
 	if (needInhale || inhaling) {
 
 		if (needInhale) {
-			//Serial.print("This should be inhale time: ");
-			//Serial.println(timeToInhale);
+			Serial.print("This should be inhale time: ");
+			Serial.println(timeToInhale);
 
 			debugInhaleTime = millis();
 
@@ -172,8 +171,8 @@ void loop() {
 
 				needExhale = true;
 				inhaling = false;
-				//Serial.print("Time to inhale: ");
-				//Serial.println(current_millis - debugInhaleTime);
+				Serial.print("Time to inhale: ");
+				Serial.println(current_millis - debugInhaleTime);
 
 				//Serial.print("At stepper Speed: ");
 				//Serial.println(conf.stepperSpeed);

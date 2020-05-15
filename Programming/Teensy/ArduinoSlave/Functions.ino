@@ -16,8 +16,8 @@ long hardLimiter(long min, long max, long value) {
 
 void loadOrwriteDefaults() {
   int canWriteDefaults;
-  EEPROM_readAnything(80, canWriteDefaults);
-
+  //EEPROM_readAnything(80, canWriteDefaults);
+  canWriteDefaults = -1;
   if (canWriteDefaults == -1) {
     conf.breathsPerMinute = 12;
     conf.airVol = 600;
@@ -40,15 +40,15 @@ void zero_position() {
 	motor.setMaxSpeed(1000);
 	//motor.setAcceleration(2000);
 
-	motor.setTargetRel(-10000);
+	motor.setTargetRel(-2000000);
 	
 	controller.moveAsync(motor);
 
-	Serial.println("Eneted zero 1");
+	Serial.println("Enetered zero 1");
 
-	while (digitalRead(ZERO_POS))
+	while (!switchPressed())
 	{
-		//Serial.println("Homing");
+		Serial.println("Homing");
 	}
 
 	controller.stop();
@@ -56,9 +56,9 @@ void zero_position() {
 	motor.setTargetAbs(offSwitchPos);
 	controller.moveAsync(motor);
 
-	while (!digitalRead(ZERO_POS))
+	while (digitalRead(ZERO_POS))
 	{
-		//Serial.println("Getting of switch");
+		Serial.println("Getting of switch");
 	}
 
 	//controller.stop();
