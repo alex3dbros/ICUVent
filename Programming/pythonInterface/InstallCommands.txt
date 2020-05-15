@@ -1,0 +1,8 @@
+QTPY: 
+sudo apt-get install python3-qt5-default
+sudo apt-get install python3-pyqt5
+python3 -m pip install qtpy
+python3 -m pip install pythongraph
+python3 -m pip install qtmodern
+python3 -m pip install scipy
+sudo apt-get install libatlas-base-dev
